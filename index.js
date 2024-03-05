@@ -111,7 +111,6 @@ app.post('/removeproduct', async (req, res) => {
     name: req.body.name
   })
 })
-
 // creating API for getting all products
 app.get('/allproduct', async (req, res) => {
   try {
@@ -234,10 +233,26 @@ app.post('/login', async (req, res) => {
 });
 
 // creating endpoint for newcollection data
-app.get('/newcollection', async (req, res) => {
-  let products = await Product.find({})
-  let newcollection = products.slices
+app.get('/popular', async (req, res) => {
+  try{
+    const limit = 4
+    const category = 'women'
+
+    const popularProducts = await Product.find({category}).limit(limit)
+
+    res.json({
+      success: true,
+      data: popularProducts
+    })
+  }catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 })
+// creating endpoint for newcollection data
+// app.get('/newcollection', async (req, res) => {
+//   let products = await Product.find({})
+//   let newcollection = products.slices
+// })
 
 // creating middleware to fetch user
 
