@@ -32,9 +32,10 @@ const upload = multer({storage: storage})
 app.use('/images',express.static('upload/images'))
 
 app.post('/upload',upload.single('product'),(req, res) => {
+  console.log('req', req)
       res.json({
           success: 1,
-          image_url: `http://localhost:${port}/images/${req.file.filename}`
+          image_url: `https://fashion-ecommerce-be.onrender.com/images/${req.file.filename}`
       })
 })  
 
@@ -119,9 +120,7 @@ app.get('/allproduct', async (req, res) => {
     let start = parseInt(req.query.start) || 0; 
     let limit = parseInt(req.query.limit) || 12; 
     let category = req.query.category; 
-
     let query = {};
-
     // Nếu category được chỉ định, thêm nó vào điều kiện truy vấn
     if (category) {
       query.category = category;
