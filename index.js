@@ -1,13 +1,16 @@
 
-// const port = 4000;
+const port = 4000;
 const express = require('express')
 const app = express()
 const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
-const multer = require("multer")
 const path = require("path")
 const cors = require('cors');
 const { v4: uuid } = require('uuid')
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require("multer")
+
 app.use(express.json())
 app.use(cors())
 
@@ -19,21 +22,31 @@ app.get("/", (req, res) => {
     res.send("Express App is Running")
 })
 
+
+// upload ảnh
+
+// cloudinary.config({ 
+//   cloud_name: 'defmx7amw', 
+//   api_key: '781925426129789', 
+//   api_secret: 'AQNuKUvEsvwB0i4bzf2mFxwUzwk' 
+// });
 const storage = multer.diskStorage({
   destination: './upload/images',
   filename: (req, file, cb) => {
         return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
   }
 })
+
 const upload = multer({storage: storage})
 
 //creating upload endpoint for images
 
 app.use('/images',express.static('upload/images'))
-app.post('/upload',upload.single('product'),(req, res) => {
+
+app.post('/upload',upload.single('product'), (req, res) => {
       res.json({
           success: 1,
-          image_url: `https://fashion-ecommerce-be.onrender.com/images/${req.file.filename}`
+          image_url: `http://localhost:${port}/images/${req.file.filename}`
       })
 })  
 
@@ -517,7 +530,7 @@ app.get('/orderList', async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 4000; // Sử dụng cổng do Render cung cấp hoặc 4000 nếu không có cổng nào được cung cấp
+// const port = process.env.PORT || 4000 Sử dụng cổng do Render cung cấp hoặc 4000 nếu không có cổng nào được cung cấp
 
 app.listen(port, (error) => {
   if (!error) {
