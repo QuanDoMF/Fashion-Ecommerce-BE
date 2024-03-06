@@ -1,4 +1,4 @@
-const port = 4000;
+// const port = 4000;
 const express = require('express')
 const app = express()
 const mongoose = require("mongoose")
@@ -530,7 +530,7 @@ app.get('/orderList', async (req, res) => {
   }
 });
 
-// const port = process.env.PORT || 4000 Sử dụng cổng do Render cung cấp hoặc 4000 nếu không có cổng nào được cung cấp
+const port = process.env.PORT || 4000 // Sử dụng cổng do Render cung cấp hoặc 4000 nếu không có cổng nào được cung cấp
 
 app.listen(port, (error) => {
   if (!error) {
