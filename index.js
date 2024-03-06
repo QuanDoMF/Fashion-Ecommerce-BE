@@ -505,7 +505,6 @@ app.post('/orderList', async (req, res) => {
 
 app.get('/orderList', async (req, res) => {
   try {
-   
     const users = await Users.find({}, 'orderList');
     const allOrderList = users.map(user => user.orderList);
 
@@ -522,7 +521,7 @@ const port = process.env.PORT || 4000; // Sử dụng cổng do Render cung cấ
 
 app.listen(port, (error) => {
   if (!error) {
-    console.log("Server Running on port: " + port);
+    console.log("Production: Server Running on port: " + port);
   } else {
     console.log("Error:" + error);
   }
