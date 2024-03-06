@@ -1,4 +1,3 @@
-
 const port = 4000;
 const express = require('express')
 const app = express()
@@ -22,35 +21,36 @@ app.get("/", (req, res) => {
     res.send("Express App is Running")
 })
 
+// Cloudinary configuration
+cloudinary.config({ 
+  cloud_name: 'defmx7amw', 
+  api_key: '781925426129789', 
+  api_secret: 'AQNuKUvEsvwB0i4bzf2mFxwUzwk' 
+});
 
-// upload ảnh
-
-// cloudinary.config({ 
-//   cloud_name: 'defmx7amw', 
-//   api_key: '781925426129789', 
-//   api_secret: 'AQNuKUvEsvwB0i4bzf2mFxwUzwk' 
-// });
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => {
-        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-  }
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  folder: 'SHOPPER', // Đổi folder tùy theo yêu cầu của bạn
+  allowedFormats: ['jpg', 'png', 'jpeg'],
 })
 
-const upload = multer({storage: storage})
+const upload = multer({ storage: storage })
 
-//creating upload endpoint for images
-
-app.use('/images',express.static('upload/images'))
-
-app.post('/upload',upload.single('product'), (req, res) => {
-      res.json({
-          success: 1,
-          image_url: `http://localhost:${port}/images/${req.file.filename}`
-      })
+// Endpoint for uploading images
+app.post('/upload', upload.single('product'), (req, res) => {
+  // console.log("req", req.file)
+  const link_img = req.file.path // Đây là đường dẫn Cloudinary
+  res.json({
+    success: 1,
+    image_url: link_img
+  })
 })  
 
-// schema for creating product
+// Static middleware path
+// Đường dẫn phải trỏ đến Cloudinary, không phải địa chỉ cục bộ
+// app.use('/images', express.static('https://res.cloudinary.com/defmx7amw/image/upload/upload'))
+
+// Schema for creating product
 const Product = mongoose.model("Product", {
   id: {
     type: Number,
@@ -80,7 +80,7 @@ const Product = mongoose.model("Product", {
     type: Date,
     default: Date.now
   },
-  avilabel: {
+  available: { // Sửa thành "available"
     type: Boolean,
     default: true,
   }
